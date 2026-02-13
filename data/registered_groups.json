@@ -4,6 +4,20 @@
     "folder": "main",
     "trigger": "@구봇",
     "added_at": "2026-02-13T23:42:00.000Z",
-    "requiresTrigger": false
+    "requiresTrigger": false,
+    "containerConfig": {
+      "additionalMounts": [
+        {
+          "hostPath": "/home/gold9",
+          "containerPath": "home",
+          "readonly": false
+        },
+        {
+          "hostPath": "/mnt/c",
+          "containerPath": "windows-c",
+          "readonly": false
+        }
+      ]
+    }
   }
 }
