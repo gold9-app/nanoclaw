@@ -1,0 +1,9 @@
+{
+  "821047296929@s.whatsapp.net": {
+    "name": "main",
+    "folder": "main",
+    "trigger": "@구봇",
+    "added_at": "2026-02-13T23:42:00.000Z",
+    "requiresTrigger": false
+  }
+}

@@ -6,17 +6,15 @@ dist/
 
 # Local data & auth
 store/
-data/
 logs/
 
-# Groups - only track base structure and specific CLAUDE.md files
-groups/*
-!groups/main/
-!groups/global/
-groups/main/*
-groups/global/*
-!groups/main/CLAUDE.md
-!groups/global/CLAUDE.md
+# Data - track config, exclude runtime state
+data/*
+!data/registered_groups.json
+
+# Groups - track all group folders and files (memory, notes, etc.)
+# Exclude only runtime artifacts
+groups/*/logs/
 
 # Secrets
 *.keys.json
