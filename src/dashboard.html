@@ -31,176 +31,28 @@
     image-rendering: pixelated;
   }
 
-  /* ── Room ── */
-  .room {
+  /* ── Game Canvas Area ── */
+  .game-area {
     flex: 1;
     position: relative;
-    background:
-      repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(255,255,255,.02) 31px, rgba(255,255,255,.02) 32px),
-      repeating-linear-gradient(90deg, transparent, transparent 31px, rgba(255,255,255,.02) 31px, rgba(255,255,255,.02) 32px),
-      linear-gradient(180deg, var(--wall) 0%, var(--bg) 60%, var(--floor) 100%);
     overflow: hidden;
   }
 
-  /* pixel grid dots */
-  .room::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle, rgba(255,255,255,.03) 1px, transparent 1px);
-    background-size: 16px 16px;
-    pointer-events: none;
+  #gameCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
   }
 
-  /* ── Claw Character ── */
-  .claw-wrap {
-    position: absolute;
-    bottom: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: filter 0.5s;
-  }
-
-  .claw {
-    position: relative;
-    width: 80px;
-    height: 70px;
-    animation: float 3s ease-in-out infinite;
-  }
-
-  /* body */
-  .claw-body {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50px;
-    height: 40px;
-    background: var(--accent);
-    border-radius: 12px 12px 8px 8px;
-    box-shadow: inset 0 -4px 0 rgba(0,0,0,.3);
-  }
-
-  /* eyes */
-  .eye {
-    position: absolute;
-    top: 10px;
-    width: 10px;
-    height: 10px;
-    background: #fff;
-    border-radius: 50%;
-    transition: all 0.3s;
-  }
-  .eye::after {
-    content: '';
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    background: #111;
-    border-radius: 50%;
-    top: 3px;
-    left: 3px;
-  }
-  .eye-l { left: 10px; }
-  .eye-r { right: 10px; }
-
-  /* sleeping eyes */
-  .sleeping .eye {
-    height: 3px;
-    top: 14px;
-    border-radius: 0;
-    background: #fff;
-  }
-  .sleeping .eye::after { display: none; }
-
-  /* running glow */
-  .running .eye {
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green), 0 0 16px var(--green);
-  }
-  .running .eye::after {
-    background: #fff;
-  }
-  .running .claw-body {
-    box-shadow: inset 0 -4px 0 rgba(0,0,0,.3), 0 0 20px rgba(0,255,136,.3);
-  }
-
-  /* pincers */
-  .pincer {
-    position: absolute;
-    top: -5px;
-    width: 20px;
-    height: 28px;
-    border: 4px solid var(--accent);
-    border-bottom: none;
-    border-radius: 10px 10px 0 0;
-    transition: transform 0.3s;
-  }
-  .pincer-l {
-    left: 2px;
-    transform: rotate(-15deg);
-    transform-origin: bottom right;
-    animation: pinch-l 2s ease-in-out infinite;
-  }
-  .pincer-r {
-    right: 2px;
-    transform: rotate(15deg);
-    transform-origin: bottom left;
-    animation: pinch-r 2s ease-in-out infinite;
-  }
-
-  .running .pincer-l { animation: pinch-l 0.6s ease-in-out infinite; }
-  .running .pincer-r { animation: pinch-r 0.6s ease-in-out infinite; }
-
-  /* legs */
-  .legs {
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 6px;
-  }
-  .leg {
-    width: 6px;
-    height: 10px;
-    background: var(--accent);
-    border-radius: 0 0 3px 3px;
-    box-shadow: inset 0 -2px 0 rgba(0,0,0,.3);
-  }
-
-  /* zzz animation */
-  .zzz {
-    position: absolute;
-    top: -20px;
-    right: -15px;
-    font-size: 8px;
-    color: var(--text-dim);
-    opacity: 0;
-  }
-  .sleeping .zzz { animation: zzz 2.5s ease-in-out infinite; }
-  .zzz:nth-child(2) { animation-delay: 0.8s !important; right: -25px; top: -30px; font-size: 10px; }
-  .zzz:nth-child(3) { animation-delay: 1.6s !important; right: -32px; top: -42px; font-size: 12px; }
-
-  /* shadow */
-  .claw-shadow {
-    position: absolute;
-    bottom: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 10px;
-    background: rgba(0,0,0,.3);
-    border-radius: 50%;
-    animation: shadow-pulse 3s ease-in-out infinite;
-  }
-
-  /* ── CRT Monitor ── */
+  /* ── CRT Monitor (HTML overlay) ── */
   .crt-wrap {
     position: absolute;
     top: 8%;
     right: 8%;
     width: 340px;
+    z-index: 10;
   }
 
   .crt-frame {
@@ -225,7 +77,6 @@
     scrollbar-color: #333 var(--crt-bg);
   }
 
-  /* scanlines */
   .crt-screen::after {
     content: '';
     position: absolute;
@@ -273,97 +124,6 @@
   .log-line.info { color: #6ec6ff; }
   .log-line.warn { color: #ffd740; }
 
-  /* ── Room Decorations ── */
-  .poster {
-    position: absolute;
-    top: 10%;
-    left: 8%;
-    width: 80px;
-    height: 60px;
-    background: linear-gradient(135deg, #e94560, #533483);
-    border: 3px solid #444;
-    border-radius: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 6px;
-    color: rgba(255,255,255,.8);
-    text-align: center;
-    line-height: 1.5;
-    box-shadow: 2px 2px 0 rgba(0,0,0,.5);
-  }
-
-  .shelf {
-    position: absolute;
-    top: 35%;
-    left: 6%;
-    width: 100px;
-    height: 6px;
-    background: #4a3728;
-    box-shadow: 0 2px 0 #3a2a1f;
-  }
-  .shelf::before, .shelf::after {
-    content: '';
-    position: absolute;
-    bottom: 6px;
-    width: 14px;
-    height: 20px;
-    border-radius: 2px 2px 0 0;
-  }
-  .shelf::before {
-    left: 10px;
-    background: #e94560;
-    box-shadow: inset -2px 0 0 rgba(0,0,0,.2);
-  }
-  .shelf::after {
-    left: 28px;
-    background: #533483;
-    height: 16px;
-    box-shadow: inset -2px 0 0 rgba(0,0,0,.2);
-  }
-
-  .plant {
-    position: absolute;
-    bottom: 18%;
-    right: 5%;
-  }
-  .plant-pot {
-    width: 24px;
-    height: 18px;
-    background: #8b4513;
-    clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
-    margin: 0 auto;
-  }
-  .plant-leaf {
-    width: 8px;
-    height: 20px;
-    background: #2d8a4e;
-    border-radius: 50% 50% 0 0;
-    position: absolute;
-    bottom: 16px;
-    left: 50%;
-    transform-origin: bottom center;
-  }
-  .plant-leaf:nth-child(1) { transform: translateX(-50%) rotate(-20deg); }
-  .plant-leaf:nth-child(2) { transform: translateX(-50%) rotate(0deg); height: 26px; }
-  .plant-leaf:nth-child(3) { transform: translateX(-50%) rotate(20deg); }
-
-  /* status indicator in room */
-  .status-orb {
-    position: absolute;
-    top: 12%;
-    right: calc(8% + 170px - 8px);
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--text-dim);
-    transition: all 0.5s;
-  }
-  .status-orb.on {
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green), 0 0 16px var(--green);
-  }
-
   /* ── Control Bar ── */
   .controls {
     background: #111;
@@ -373,6 +133,7 @@
     align-items: center;
     gap: 20px;
     min-height: 56px;
+    z-index: 10;
   }
 
   .status-light {
@@ -448,46 +209,10 @@
   }
   .uptime span { color: var(--text); }
 
-  /* ── Animations ── */
-  @keyframes float {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-8px); }
-  }
-
-  @keyframes shadow-pulse {
-    0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.3; }
-    50% { transform: translateX(-50%) scaleX(0.85); opacity: 0.2; }
-  }
-
-  @keyframes pinch-l {
-    0%, 100% { transform: rotate(-15deg); }
-    50% { transform: rotate(-5deg); }
-  }
-  @keyframes pinch-r {
-    0%, 100% { transform: rotate(15deg); }
-    50% { transform: rotate(5deg); }
-  }
-
-  @keyframes zzz {
-    0% { opacity: 0; transform: translateY(0) scale(0.8); }
-    50% { opacity: 1; }
-    100% { opacity: 0; transform: translateY(-15px) scale(1.1); }
-  }
-
-  /* running state: faster float */
-  .running .claw {
-    animation-duration: 1.2s;
-  }
-  .running .claw-shadow {
-    animation-duration: 1.2s;
-  }
-
   /* ── Responsive ── */
   @media (max-width: 700px) {
     .crt-wrap { width: 260px; top: 5%; right: 4%; }
     .crt-screen { height: 140px; font-size: 9px; }
-    .poster { display: none; }
-    .shelf { display: none; }
     .controls { padding: 10px 12px; gap: 10px; }
     .btn { padding: 8px 14px; font-size: 8px; }
   }
@@ -495,20 +220,10 @@
 </head>
 <body>
 
-<div class="room">
-  <!-- Decorations -->
-  <div class="poster">NANO<br>CLAW<br>v1.0</div>
+<div class="game-area">
+  <canvas id="gameCanvas"></canvas>
 
-  <div class="shelf"></div>
-
-  <div class="plant">
-    <div class="plant-leaf"></div>
-    <div class="plant-leaf"></div>
-    <div class="plant-leaf"></div>
-    <div class="plant-pot"></div>
-  </div>
-
-  <!-- CRT Monitor -->
+  <!-- CRT Monitor (HTML overlay) -->
   <div class="crt-wrap">
     <div class="crt-frame">
       <div class="crt-screen" id="logScreen">
@@ -519,29 +234,6 @@
     <div class="crt-label">LOG MONITOR</div>
     <div class="crt-stand"></div>
     <div class="crt-base"></div>
-  </div>
-
-  <div class="status-orb" id="statusOrb"></div>
-
-  <!-- Claw Character -->
-  <div class="claw-wrap">
-    <div id="clawChar" class="claw sleeping">
-      <div class="claw-body">
-        <div class="eye eye-l"></div>
-        <div class="eye eye-r"></div>
-      </div>
-      <div class="pincer pincer-l"></div>
-      <div class="pincer pincer-r"></div>
-      <div class="legs">
-        <div class="leg"></div>
-        <div class="leg"></div>
-        <div class="leg"></div>
-      </div>
-      <span class="zzz">z</span>
-      <span class="zzz">z</span>
-      <span class="zzz">z</span>
-      <div class="claw-shadow"></div>
-    </div>
   </div>
 </div>
 
@@ -561,132 +253,1058 @@
 </div>
 
 <script>
-  const logScreen = document.getElementById('logScreen');
-  const clawChar = document.getElementById('clawChar');
-  const statusDot = document.getElementById('statusDot');
-  const statusOrb = document.getElementById('statusOrb');
-  const statusLabel = document.getElementById('statusLabel');
-  const btnStart = document.getElementById('btnStart');
-  const btnStop = document.getElementById('btnStop');
-  const uptimeVal = document.getElementById('uptimeVal');
+// ════════════════════════════════════════════════════════════
+//  NanoClaw Canvas Pixel Art Game Engine
+// ════════════════════════════════════════════════════════════
 
-  let eventSource = null;
-  let botRunning = false;
-  let startTime = null;
-  let uptimeTimer = null;
+// ── DOM refs ──
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const logScreen = document.getElementById('logScreen');
+const statusDot = document.getElementById('statusDot');
+const statusLabel = document.getElementById('statusLabel');
+const btnStart = document.getElementById('btnStart');
+const btnStop = document.getElementById('btnStop');
+const uptimeVal = document.getElementById('uptimeVal');
 
-  function setRunning(running) {
-    botRunning = running;
-    clawChar.className = 'claw ' + (running ? 'running' : 'sleeping');
-    statusDot.className = 'status-dot' + (running ? ' on' : '');
-    statusOrb.className = 'status-orb' + (running ? ' on' : '');
-    statusLabel.className = 'status-text' + (running ? ' on' : '');
-    statusLabel.textContent = running ? 'Running' : 'Offline';
-    btnStart.disabled = running;
-    btnStop.disabled = !running;
+// ── SSE / Bot state ──
+let eventSource = null;
+let botRunning = false;
+let startTime = null;
+let uptimeTimer = null;
 
-    if (running && !startTime) {
+// ════════════════════════════════════════════════════════════
+//  1. Palette & Sprite System
+// ════════════════════════════════════════════════════════════
+
+const PALETTE = {
+  '_': null,                // transparent
+  'R': '#e94560',           // red (accent / body)
+  'r': '#c23050',           // dark red
+  'W': '#ffffff',           // white
+  'w': '#cccccc',           // light gray
+  'K': '#111111',           // black
+  'k': '#333333',           // dark gray
+  'G': '#00ff88',           // green (eyes running)
+  'g': '#00cc6e',           // dark green
+  'B': '#6ec6ff',           // blue
+  'b': '#4a90b8',           // dark blue
+  'S': '#ffcc88',           // skin/beige
+  's': '#cc9966',           // dark skin
+  'O': '#ff9944',           // orange
+  'P': '#533483',           // purple
+  'p': '#3a2460',           // dark purple
+  'Y': '#ffd740',           // yellow
+  'T': '#2d8a4e',           // teal/plant green
+  't': '#1e6b38',           // dark plant green
+  'N': '#8b4513',           // brown
+  'n': '#6b3410',           // dark brown
+};
+
+// 16x16 sprite data — each string is one row (16 chars)
+const SPRITES = {
+  // ── Idle frame 1 (standing) ──
+  idle1: [
+    '____RRRRRR____',   // row 0  (14 chars padded to 16 below)
+    '___RRRRRRRR___',
+    '__RRRrRRRrRR__',
+    '__RRWKRRWKRR__',   // eyes: white + black pupil
+    '__RRRRRRRRRR__',
+    '__RRRRrrRRRR__',   // mouth line
+    '___RRRRRRRR___',
+    '___RRRRRRRR___',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '_____RRRR_____',
+    '____RR__RR____',   // legs apart
+    '____RR__RR____',
+    '____rr__rr____',   // feet
+  ],
+  // ── Idle frame 2 (blink) ──
+  idle2: [
+    '____RRRRRR____',
+    '___RRRRRRRR___',
+    '__RRRrRRRrRR__',
+    '__RRKKRRKKrR__',   // eyes closed (flat line)
+    '__RRRRRRRRRR__',
+    '__RRRRrrRRRR__',
+    '___RRRRRRRR___',
+    '___RRRRRRRR___',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '_____RRRR_____',
+    '____RR__RR____',
+    '____RR__RR____',
+    '____rr__rr____',
+  ],
+  // ── Walk frame 1 (left leg forward) ──
+  walk1: [
+    '____RRRRRR____',
+    '___RRRRRRRR___',
+    '__RRRrRRRrRR__',
+    '__RRWKRRWKRR__',
+    '__RRRRRRRRRR__',
+    '__RRRRrrRRRR__',
+    '___RRRRRRRR___',
+    '___RRRRRRRR___',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '_____RRRR_____',
+    '___RR____RR___',   // legs wide
+    '___RR____RR___',
+    '___rr____rr___',
+  ],
+  // ── Walk frame 2 (right leg forward) ──
+  walk2: [
+    '____RRRRRR____',
+    '___RRRRRRRR___',
+    '__RRRrRRRrRR__',
+    '__RRWKRRWKRR__',
+    '__RRRRRRRRRR__',
+    '__RRRRrrRRRR__',
+    '___RRRRRRRR___',
+    '___RRRRRRRR___',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '_____RRRR_____',
+    '____RRRRRR____',   // legs together
+    '____RRRRRR____',
+    '____rrrrrr____',
+  ],
+  // ── Sleep frame ──
+  sleep: [
+    '______________',
+    '______________',
+    '______________',
+    '______________',
+    '______________',
+    '______________',
+    '______________',
+    '______________',
+    '______________',
+    '___RRRRRRRR___',
+    '__RRRrRRRrRR__',
+    '__RRkkRRkkRR__',   // closed eyes
+    '__RRRRRRRRRR__',
+    '__RRRRrrRRRR__',
+    '__RRRRRRRRRR__',
+    '___RRRRRRRR___',
+  ],
+  // ── Work frame 1 (arms up / typing) ──
+  work1: [
+    '____RRRRRR____',
+    '___RRRRRRRR___',
+    '__RRRrRRRrRR__',
+    '__RRWKRRWKRR__',
+    '__RRRRRRRRRR__',
+    '__RRRRrrRRRR__',
+    '___RRRRRRRR___',
+    '__RRRRRRRRR___',   // arm extended right
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '_____RRRR_____',
+    '____RR__RR____',
+    '____RR__RR____',
+    '____rr__rr____',
+  ],
+  // ── Work frame 2 ──
+  work2: [
+    '____RRRRRR____',
+    '___RRRRRRRR___',
+    '__RRRrRRRrRR__',
+    '__RRWKRRWKRR__',
+    '__RRRRRRRRRR__',
+    '__RRRRrrRRRR__',
+    '___RRRRRRRR___',
+    '___RRRRRRRRR__',   // arm extended left
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '_____RRRR_____',
+    '____RR__RR____',
+    '____RR__RR____',
+    '____rr__rr____',
+  ],
+  // ── Happy frame (jump) ──
+  happy: [
+    '____RRRRRR____',
+    '___RRRRRRRR___',
+    '__RRRrRRRrRR__',
+    '__RRWWRRWWRR__',   // big eyes
+    '__RRRRRRRRRR__',
+    '__RRrrRRrrRR__',   // smile
+    '___RRRRRRRR___',
+    '_RR_RRRRRR_RR_',   // arms up
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '_____RRRR_____',
+    '____RR__RR____',
+    '______________',   // airborne
+    '______________',
+  ],
+  // ── Error frame (distressed) ──
+  error: [
+    '____RRRRRR____',
+    '___RRRRRRRR___',
+    '__RRRrRRRrRR__',
+    '__RRWKRRWKRR__',   // worried eyes
+    '__RRRRRRRRRR__',
+    '__RRRrrrRRRR__',   // wavy mouth
+    '___RRRRRRRR___',
+    '___RRRRRRRR___',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '____RRRRRR____',
+    '_____RRRR_____',
+    '____RR__RR____',
+    '____RR__RR____',
+    '____rr__rr____',
+  ],
+};
+
+// Normalize all sprites to exactly 16 chars wide
+for (const key in SPRITES) {
+  SPRITES[key] = SPRITES[key].map(row => {
+    if (row.length < 16) return row + '_'.repeat(16 - row.length);
+    return row.substring(0, 16);
+  });
+  // Ensure 16 rows
+  while (SPRITES[key].length < 16) SPRITES[key].push('________________');
+}
+
+// Pre-render sprites to offscreen canvases for performance
+const SPRITE_SCALE = 4;  // 16x16 → 64x64
+const spriteCache = {};
+const spriteCacheFlipped = {};
+
+function renderSpriteToCanvas(spriteData) {
+  const c = document.createElement('canvas');
+  c.width = 16 * SPRITE_SCALE;
+  c.height = 16 * SPRITE_SCALE;
+  const cx = c.getContext('2d');
+  for (let y = 0; y < 16; y++) {
+    const row = spriteData[y];
+    for (let x = 0; x < 16; x++) {
+      const ch = row[x];
+      const color = PALETTE[ch];
+      if (!color) continue;
+      cx.fillStyle = color;
+      cx.fillRect(x * SPRITE_SCALE, y * SPRITE_SCALE, SPRITE_SCALE, SPRITE_SCALE);
+    }
+  }
+  return c;
+}
+
+function renderSpriteFlipped(spriteData) {
+  const c = document.createElement('canvas');
+  c.width = 16 * SPRITE_SCALE;
+  c.height = 16 * SPRITE_SCALE;
+  const cx = c.getContext('2d');
+  for (let y = 0; y < 16; y++) {
+    const row = spriteData[y];
+    for (let x = 0; x < 16; x++) {
+      const ch = row[x];
+      const color = PALETTE[ch];
+      if (!color) continue;
+      cx.fillStyle = color;
+      cx.fillRect((15 - x) * SPRITE_SCALE, y * SPRITE_SCALE, SPRITE_SCALE, SPRITE_SCALE);
+    }
+  }
+  return c;
+}
+
+// Cache all sprites
+for (const key in SPRITES) {
+  spriteCache[key] = renderSpriteToCanvas(SPRITES[key]);
+  spriteCacheFlipped[key] = renderSpriteFlipped(SPRITES[key]);
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  2. Room Background Renderer
+// ════════════════════════════════════════════════════════════
+
+let bgCanvas = null;
+let lastBgW = 0, lastBgH = 0;
+
+function renderBackground(w, h) {
+  if (bgCanvas && lastBgW === w && lastBgH === h) return bgCanvas;
+
+  bgCanvas = document.createElement('canvas');
+  bgCanvas.width = w;
+  bgCanvas.height = h;
+  const bg = bgCanvas.getContext('2d');
+  lastBgW = w;
+  lastBgH = h;
+
+  const floorY = Math.floor(h * 0.75);
+
+  // Wall gradient
+  const wallGrad = bg.createLinearGradient(0, 0, 0, floorY);
+  wallGrad.addColorStop(0, '#0f3460');
+  wallGrad.addColorStop(0.6, '#1a1a2e');
+  wallGrad.addColorStop(1, '#16213e');
+  bg.fillStyle = wallGrad;
+  bg.fillRect(0, 0, w, floorY);
+
+  // Floor
+  bg.fillStyle = '#16213e';
+  bg.fillRect(0, floorY, w, h - floorY);
+
+  // Floor line
+  bg.strokeStyle = '#2a3a5e';
+  bg.lineWidth = 2;
+  bg.beginPath();
+  bg.moveTo(0, floorY);
+  bg.lineTo(w, floorY);
+  bg.stroke();
+
+  // Floor grid dots
+  bg.fillStyle = 'rgba(255,255,255,0.04)';
+  for (let x = 0; x < w; x += 16) {
+    for (let y = floorY + 8; y < h; y += 16) {
+      bg.fillRect(x, y, 2, 2);
+    }
+  }
+
+  // Wall grid dots
+  bg.fillStyle = 'rgba(255,255,255,0.02)';
+  for (let x = 0; x < w; x += 32) {
+    for (let y = 0; y < floorY; y += 32) {
+      bg.fillRect(x, y, 1, 1);
+    }
+  }
+
+  // ── Furniture ──
+
+  // Bed (left side)
+  const bedX = Math.floor(w * 0.08);
+  const bedY = floorY - 40;
+  const bedW = 100;
+  const bedH = 40;
+
+  // Bed frame
+  bg.fillStyle = '#4a3728';
+  bg.fillRect(bedX, bedY, bedW, bedH);
+  bg.fillStyle = '#3a2a1f';
+  bg.fillRect(bedX, bedY + bedH - 4, bedW, 4);
+  // Headboard
+  bg.fillStyle = '#5a4738';
+  bg.fillRect(bedX, bedY - 20, 8, 20 + bedH);
+  // Pillow
+  bg.fillStyle = '#ddd';
+  bg.fillRect(bedX + 12, bedY + 4, 24, 14);
+  bg.fillStyle = '#ccc';
+  bg.fillRect(bedX + 12, bedY + 14, 24, 4);
+  // Blanket
+  bg.fillStyle = '#3355aa';
+  bg.fillRect(bedX + 38, bedY + 4, bedW - 42, bedH - 8);
+  bg.fillStyle = '#2244aa';
+  bg.fillRect(bedX + 38, bedY + 4, bedW - 42, 4);
+
+  // Desk (center-right)
+  const deskX = Math.floor(w * 0.45);
+  const deskY = floorY - 44;
+  const deskW = 120;
+  const deskH = 44;
+
+  // Desk top
+  bg.fillStyle = '#5a4738';
+  bg.fillRect(deskX, deskY, deskW, 6);
+  // Desk legs
+  bg.fillStyle = '#4a3728';
+  bg.fillRect(deskX + 4, deskY + 6, 6, deskH - 6);
+  bg.fillRect(deskX + deskW - 10, deskY + 6, 6, deskH - 6);
+  // Desk panel
+  bg.fillStyle = '#3a2a1f';
+  bg.fillRect(deskX + 4, deskY + 10, deskW - 8, 4);
+
+  // Small monitor on desk
+  const monX = deskX + Math.floor(deskW / 2) - 20;
+  const monY = deskY - 30;
+  bg.fillStyle = '#333';
+  bg.fillRect(monX, monY, 40, 28);
+  bg.fillStyle = '#0a0a12';
+  bg.fillRect(monX + 3, monY + 3, 34, 20);
+  // Monitor stand
+  bg.fillStyle = '#333';
+  bg.fillRect(monX + 16, monY + 28, 8, 4);
+  bg.fillRect(monX + 12, monY + 32, 16, 3);
+  // Screen glow
+  bg.fillStyle = 'rgba(0,255,136,0.15)';
+  bg.fillRect(monX + 3, monY + 3, 34, 20);
+  // Screen lines (code-like)
+  bg.fillStyle = '#00ff88';
+  bg.globalAlpha = 0.4;
+  bg.fillRect(monX + 6, monY + 7, 18, 2);
+  bg.fillRect(monX + 6, monY + 11, 24, 2);
+  bg.fillRect(monX + 6, monY + 15, 14, 2);
+  bg.globalAlpha = 1.0;
+
+  // Poster (upper left wall)
+  const postX = Math.floor(w * 0.08);
+  const postY = Math.floor(h * 0.10);
+  bg.fillStyle = '#444';
+  bg.fillRect(postX - 2, postY - 2, 64, 48);
+  const posterGrad = bg.createLinearGradient(postX, postY, postX + 60, postY + 44);
+  posterGrad.addColorStop(0, '#e94560');
+  posterGrad.addColorStop(1, '#533483');
+  bg.fillStyle = posterGrad;
+  bg.fillRect(postX, postY, 60, 44);
+  // Poster text
+  bg.fillStyle = 'rgba(255,255,255,0.7)';
+  bg.font = '6px monospace';
+  bg.textAlign = 'center';
+  bg.fillText('NANO', postX + 30, postY + 18);
+  bg.fillText('CLAW', postX + 30, postY + 28);
+  bg.fillText('v1.0', postX + 30, postY + 38);
+
+  // Shelf (left wall, below poster)
+  const shelfX = Math.floor(w * 0.06);
+  const shelfY = Math.floor(h * 0.35);
+  bg.fillStyle = '#4a3728';
+  bg.fillRect(shelfX, shelfY, 80, 5);
+  bg.fillStyle = '#3a2a1f';
+  bg.fillRect(shelfX, shelfY + 5, 80, 2);
+  // Books on shelf
+  bg.fillStyle = '#e94560';
+  bg.fillRect(shelfX + 8, shelfY - 16, 10, 16);
+  bg.fillStyle = '#c23050';
+  bg.fillRect(shelfX + 8, shelfY - 16, 10, 2);
+  bg.fillStyle = '#533483';
+  bg.fillRect(shelfX + 20, shelfY - 12, 8, 12);
+  bg.fillStyle = '#3a2460';
+  bg.fillRect(shelfX + 20, shelfY - 12, 8, 2);
+  bg.fillStyle = '#6ec6ff';
+  bg.fillRect(shelfX + 30, shelfY - 18, 10, 18);
+
+  // Plant (right side)
+  const plantX = Math.floor(w * 0.85);
+  const plantY = floorY - 4;
+  // Pot
+  bg.fillStyle = '#8b4513';
+  bg.beginPath();
+  bg.moveTo(plantX - 10, plantY - 20);
+  bg.lineTo(plantX + 10, plantY - 20);
+  bg.lineTo(plantX + 12, plantY);
+  bg.lineTo(plantX - 12, plantY);
+  bg.closePath();
+  bg.fill();
+  // Leaves
+  bg.fillStyle = '#2d8a4e';
+  drawLeaf(bg, plantX - 6, plantY - 22, -0.35);
+  drawLeaf(bg, plantX, plantY - 22, 0);
+  drawLeaf(bg, plantX + 6, plantY - 22, 0.35);
+
+  return bgCanvas;
+}
+
+function drawLeaf(cx, x, y, angle) {
+  cx.save();
+  cx.translate(x, y);
+  cx.rotate(angle);
+  cx.beginPath();
+  cx.ellipse(0, -12, 5, 12, 0, 0, Math.PI * 2);
+  cx.fill();
+  cx.restore();
+}
+
+// ════════════════════════════════════════════════════════════
+//  3. Character State Machine
+// ════════════════════════════════════════════════════════════
+
+const STATE_PRIORITY = { sleep: 0, idle: 1, walk: 2, work: 3, happy: 4, error: 5 };
+
+const character = {
+  x: 0,
+  y: 0,
+  targetX: 0,
+  targetY: 0,
+  facing: 1,       // 1 = right, -1 = left
+  state: 'sleep',
+  prevState: 'sleep',
+  frame: 0,
+  frameTimer: 0,
+  stateTimer: 0,
+  idleTimer: 0,
+  wanderTimer: 0,
+  shakeOffset: 0,
+  jumpOffset: 0,
+  speed: 1.5,
+};
+
+// Room positions (will be recalculated on resize)
+const positions = {
+  bed: { x: 0, y: 0 },
+  desk: { x: 0, y: 0 },
+  center: { x: 0, y: 0 },
+};
+
+function updatePositions(w, h) {
+  const floorY = Math.floor(h * 0.75);
+  positions.bed.x = Math.floor(w * 0.08) + 50;
+  positions.bed.y = floorY - 40;
+  positions.desk.x = Math.floor(w * 0.45) + 60;
+  positions.desk.y = floorY - 64;
+  positions.center.x = Math.floor(w * 0.35);
+  positions.center.y = floorY - 64;
+}
+
+function requestState(newState) {
+  const newPri = STATE_PRIORITY[newState] ?? 0;
+  const curPri = STATE_PRIORITY[character.state] ?? 0;
+
+  // Always allow transition to sleep/idle from anything
+  if (newState === 'sleep' || newState === 'idle') {
+    if (character.state === newState) return;
+    character.prevState = character.state;
+    character.state = newState;
+    character.stateTimer = 0;
+    character.frame = 0;
+    character.frameTimer = 0;
+
+    if (newState === 'sleep') {
+      character.targetX = positions.bed.x;
+      character.targetY = positions.bed.y;
+      // Walk to bed first if not already there
+      if (Math.abs(character.x - positions.bed.x) > 10) {
+        character.state = 'walk';
+        character.prevState = 'walk';
+        // Will transition to sleep upon arrival
+        character._pendingState = 'sleep';
+      }
+    }
+    return;
+  }
+
+  // For higher priority states, override current
+  if (newPri >= curPri || character.state === 'idle' || character.state === 'walk') {
+    character.prevState = character.state;
+    character.state = newState;
+    character.stateTimer = 0;
+    character.frame = 0;
+    character.frameTimer = 0;
+
+    if (newState === 'work') {
+      character.targetX = positions.desk.x;
+      character.targetY = positions.desk.y;
+    }
+  }
+}
+
+function getRandomFloorPos(w, h) {
+  const floorY = Math.floor(h * 0.75);
+  const margin = 80;
+  return {
+    x: margin + Math.random() * (w - margin * 2),
+    y: floorY - 64,
+  };
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  4. Particle System
+// ════════════════════════════════════════════════════════════
+
+const particles = [];
+
+function spawnParticle(type, x, y) {
+  switch (type) {
+    case 'zzz':
+      particles.push({
+        type: 'zzz',
+        x: x + 40,
+        y: y - 10,
+        vx: 0.3,
+        vy: -0.6,
+        life: 90,
+        maxLife: 90,
+        char: 'z',
+        size: 8 + Math.random() * 4,
+      });
+      break;
+    case 'sparkle':
+      for (let i = 0; i < 7; i++) {
+        const angle = (Math.PI * 2 * i) / 7;
+        particles.push({
+          type: 'sparkle',
+          x: x + 32,
+          y: y + 32,
+          vx: Math.cos(angle) * (1.5 + Math.random()),
+          vy: Math.sin(angle) * (1.5 + Math.random()),
+          life: 40 + Math.random() * 20,
+          maxLife: 60,
+          size: 3 + Math.random() * 3,
+          color: ['#ffd740', '#ffeb3b', '#fff', '#00ff88'][Math.floor(Math.random() * 4)],
+        });
+      }
+      break;
+    case 'sweat':
+      particles.push({
+        type: 'sweat',
+        x: x + (Math.random() > 0.5 ? 50 : 14),
+        y: y,
+        vx: 0,
+        vy: 1.5,
+        life: 40,
+        maxLife: 40,
+        size: 4,
+      });
+      break;
+  }
+}
+
+function updateParticles() {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life--;
+    if (p.life <= 0) {
+      particles.splice(i, 1);
+    }
+  }
+}
+
+function drawParticles(cx) {
+  for (const p of particles) {
+    const alpha = Math.min(1, p.life / (p.maxLife * 0.3));
+    cx.globalAlpha = alpha;
+
+    switch (p.type) {
+      case 'zzz':
+        cx.font = `bold ${Math.floor(p.size)}px "Press Start 2P", monospace`;
+        cx.fillStyle = '#8888cc';
+        cx.fillText('z', p.x, p.y);
+        break;
+      case 'sparkle':
+        cx.fillStyle = p.color;
+        // 4-point star
+        const s = p.size;
+        cx.beginPath();
+        cx.moveTo(p.x, p.y - s);
+        cx.lineTo(p.x + s * 0.3, p.y - s * 0.3);
+        cx.lineTo(p.x + s, p.y);
+        cx.lineTo(p.x + s * 0.3, p.y + s * 0.3);
+        cx.lineTo(p.x, p.y + s);
+        cx.lineTo(p.x - s * 0.3, p.y + s * 0.3);
+        cx.lineTo(p.x - s, p.y);
+        cx.lineTo(p.x - s * 0.3, p.y - s * 0.3);
+        cx.closePath();
+        cx.fill();
+        break;
+      case 'sweat':
+        cx.fillStyle = '#6ec6ff';
+        cx.beginPath();
+        cx.moveTo(p.x, p.y);
+        cx.quadraticCurveTo(p.x + p.size, p.y + p.size * 2, p.x, p.y + p.size * 3);
+        cx.quadraticCurveTo(p.x - p.size, p.y + p.size * 2, p.x, p.y);
+        cx.fill();
+        break;
+    }
+    cx.globalAlpha = 1.0;
+  }
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  5. Game Loop
+// ════════════════════════════════════════════════════════════
+
+let lastTime = 0;
+let tickAccum = 0;
+const TICK_RATE = 1000 / 30;  // 30 fps logic
+let zzzTimer = 0;
+let sweatTimer = 0;
+
+function resize() {
+  const area = canvas.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  const w = area.clientWidth;
+  const h = area.clientHeight;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  updatePositions(w, h);
+  // Invalidate bg cache
+  lastBgW = 0;
+}
+
+function init() {
+  resize();
+  window.addEventListener('resize', resize);
+
+  const w = canvas.parentElement.clientWidth;
+  const h = canvas.parentElement.clientHeight;
+
+  // Start at bed
+  character.x = positions.bed.x;
+  character.y = positions.bed.y;
+  character.targetX = character.x;
+  character.targetY = character.y;
+  character.state = 'sleep';
+
+  requestAnimationFrame(gameLoop);
+}
+
+function gameLoop(timestamp) {
+  if (!lastTime) lastTime = timestamp;
+  const dt = timestamp - lastTime;
+  lastTime = timestamp;
+
+  tickAccum += dt;
+  while (tickAccum >= TICK_RATE) {
+    update();
+    tickAccum -= TICK_RATE;
+  }
+
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+function update() {
+  const w = canvas.parentElement.clientWidth;
+  const h = canvas.parentElement.clientHeight;
+
+  character.stateTimer++;
+  character.frameTimer++;
+
+  // ── State-specific updates ──
+  switch (character.state) {
+    case 'sleep':
+      // Zzz particles
+      zzzTimer++;
+      if (zzzTimer > 50) {
+        spawnParticle('zzz', character.x, character.y);
+        zzzTimer = 0;
+      }
+      break;
+
+    case 'idle':
+      // Blink occasionally
+      character.idleTimer++;
+      character.wanderTimer++;
+
+      // Wander after 300 ticks (~10s)
+      if (character.wanderTimer > 300) {
+        const pos = getRandomFloorPos(w, h);
+        character.targetX = pos.x;
+        character.targetY = pos.y;
+        requestState('walk');
+        character.wanderTimer = 0;
+      }
+      break;
+
+    case 'walk': {
+      const dx = character.targetX - character.x;
+      const dy = character.targetY - character.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist > 3) {
+        character.x += (dx / dist) * character.speed;
+        character.y += (dy / dist) * character.speed;
+        character.facing = dx > 0 ? 1 : -1;
+      } else {
+        character.x = character.targetX;
+        character.y = character.targetY;
+        // Check for pending state
+        if (character._pendingState) {
+          const pending = character._pendingState;
+          character._pendingState = null;
+          character.state = pending;
+          character.stateTimer = 0;
+          character.frame = 0;
+        } else {
+          requestState('idle');
+        }
+      }
+      break;
+    }
+
+    case 'work':
+      // Walk to desk first
+      {
+        const dx = positions.desk.x - character.x;
+        const dy = positions.desk.y - character.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 3) {
+          character.x += (dx / dist) * character.speed;
+          character.y += (dy / dist) * character.speed;
+          character.facing = dx > 0 ? 1 : -1;
+        } else {
+          character.facing = 1; // face desk
+        }
+      }
+      // Return to idle after 3s (90 ticks)
+      if (character.stateTimer > 90) {
+        requestState('idle');
+      }
+      break;
+
+    case 'happy':
+      // Jump animation
+      character.jumpOffset = -Math.abs(Math.sin(character.stateTimer * 0.2)) * 16;
+      // Sparkle burst at start
+      if (character.stateTimer === 1) {
+        spawnParticle('sparkle', character.x, character.y);
+      }
+      // Return to idle after 3s
+      if (character.stateTimer > 90) {
+        character.jumpOffset = 0;
+        requestState('idle');
+      }
+      break;
+
+    case 'error':
+      // Shake
+      character.shakeOffset = (Math.random() - 0.5) * 6;
+      // Sweat
+      sweatTimer++;
+      if (sweatTimer > 15) {
+        spawnParticle('sweat', character.x, character.y);
+        sweatTimer = 0;
+      }
+      // Return to idle after 2s
+      if (character.stateTimer > 60) {
+        character.shakeOffset = 0;
+        requestState('idle');
+      }
+      break;
+  }
+
+  // Frame animation
+  if (character.frameTimer > 10) {
+    character.frame = (character.frame + 1) % 2;
+    character.frameTimer = 0;
+  }
+
+  updateParticles();
+}
+
+function getSpriteName() {
+  switch (character.state) {
+    case 'sleep': return 'sleep';
+    case 'idle': return character.frame === 0 && character.idleTimer % 120 > 110 ? 'idle2' : 'idle1';
+    case 'walk': return character.frame === 0 ? 'walk1' : 'walk2';
+    case 'work': return character.frame === 0 ? 'work1' : 'work2';
+    case 'happy': return 'happy';
+    case 'error': return 'error';
+    default: return 'idle1';
+  }
+}
+
+function draw() {
+  const w = canvas.parentElement.clientWidth;
+  const h = canvas.parentElement.clientHeight;
+
+  // Clear
+  ctx.clearRect(0, 0, w, h);
+
+  // Background
+  const bg = renderBackground(w, h);
+  ctx.drawImage(bg, 0, 0);
+
+  // Character shadow
+  const floorY = Math.floor(h * 0.75);
+  const shadowY = floorY - 6;
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.beginPath();
+  ctx.ellipse(
+    character.x + 32,
+    shadowY,
+    24, 6, 0, 0, Math.PI * 2
+  );
+  ctx.fill();
+
+  // Character sprite
+  const spriteName = getSpriteName();
+  const cache = character.facing === 1 ? spriteCache : spriteCacheFlipped;
+  const sprite = cache[spriteName];
+
+  if (sprite) {
+    const drawX = character.x + character.shakeOffset;
+    const drawY = character.y + character.jumpOffset;
+    ctx.drawImage(sprite, drawX, drawY);
+  }
+
+  // Particles
+  drawParticles(ctx);
+
+  // Status orb (on the desk monitor)
+  if (botRunning) {
+    const orbX = Math.floor(w * 0.45) + 60 + 14;
+    const orbY = Math.floor(h * 0.75) - 44 - 30 + 8;
+    ctx.fillStyle = '#00ff88';
+    ctx.shadowColor = '#00ff88';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(orbX, orbY, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  6. SSE / Controls (same interface as before)
+// ════════════════════════════════════════════════════════════
+
+function setRunning(running) {
+  botRunning = running;
+  statusDot.className = 'status-dot' + (running ? ' on' : '');
+  statusLabel.className = 'status-text' + (running ? ' on' : '');
+  statusLabel.textContent = running ? 'Running' : 'Offline';
+  btnStart.disabled = running;
+  btnStop.disabled = !running;
+
+  if (running) {
+    // Wake up: sleep → idle
+    if (character.state === 'sleep') {
+      requestState('idle');
+      // Walk to center
+      const w = canvas.parentElement.clientWidth;
+      const h = canvas.parentElement.clientHeight;
+      const pos = getRandomFloorPos(w, h);
+      character.targetX = pos.x;
+      character.targetY = pos.y;
+      character.state = 'walk';
+      character._pendingState = null;
+    }
+
+    if (!startTime) {
       startTime = Date.now();
       uptimeTimer = setInterval(updateUptime, 1000);
     }
-    if (!running) {
-      startTime = null;
-      clearInterval(uptimeTimer);
-      uptimeVal.textContent = '--:--:--';
+  } else {
+    // Go to sleep
+    requestState('sleep');
+    startTime = null;
+    clearInterval(uptimeTimer);
+    uptimeVal.textContent = '--:--:--';
+  }
+}
+
+function updateUptime() {
+  if (!startTime) return;
+  const diff = Math.floor((Date.now() - startTime) / 1000);
+  const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+  const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+  const s = String(diff % 60).padStart(2, '0');
+  uptimeVal.textContent = `${h}:${m}:${s}`;
+}
+
+function addLog(text, type) {
+  const div = document.createElement('div');
+  div.className = 'log-line' + (type ? ' ' + type : '');
+  div.textContent = text;
+  logScreen.appendChild(div);
+
+  while (logScreen.children.length > 500) {
+    logScreen.removeChild(logScreen.firstChild);
+  }
+  logScreen.scrollTop = logScreen.scrollHeight;
+
+  // ── Trigger character reactions ──
+  if (!botRunning) return;
+
+  const lower = text.toLowerCase();
+
+  if (lower.includes('error') || lower.includes('fatal')) {
+    requestState('error');
+  } else if (lower.includes('connected') || lower.includes('success') || lower.includes('authenticated')) {
+    requestState('happy');
+  } else {
+    // Any log = work
+    requestState('work');
+    character.wanderTimer = 0;  // reset wander timer
+  }
+}
+
+function connectSSE() {
+  if (eventSource) eventSource.close();
+  eventSource = new EventSource('/events');
+
+  eventSource.addEventListener('log', (e) => {
+    const data = JSON.parse(e.data);
+    addLog(data.text, data.type);
+  });
+
+  eventSource.addEventListener('status', (e) => {
+    const data = JSON.parse(e.data);
+    setRunning(data.running);
+    if (data.running && data.uptime) {
+      startTime = Date.now() - data.uptime * 1000;
+      if (!uptimeTimer) uptimeTimer = setInterval(updateUptime, 1000);
+      updateUptime();
     }
+  });
+
+  eventSource.onerror = () => {
+    setTimeout(connectSSE, 3000);
+  };
+}
+
+async function startBot() {
+  btnStart.disabled = true;
+  addLog('> Starting bot...', 'info');
+  try {
+    const res = await fetch('/start', { method: 'POST' });
+    const data = await res.json();
+    if (!data.ok) addLog('Error: ' + data.error, 'error');
+  } catch (e) {
+    addLog('Failed to start: ' + e.message, 'error');
+    btnStart.disabled = false;
   }
+}
 
-  function updateUptime() {
-    if (!startTime) return;
-    const diff = Math.floor((Date.now() - startTime) / 1000);
-    const h = String(Math.floor(diff / 3600)).padStart(2, '0');
-    const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
-    const s = String(diff % 60).padStart(2, '0');
-    uptimeVal.textContent = `${h}:${m}:${s}`;
+async function stopBot() {
+  btnStop.disabled = true;
+  addLog('> Stopping bot...', 'info');
+  try {
+    const res = await fetch('/stop', { method: 'POST' });
+    const data = await res.json();
+    if (!data.ok) addLog('Error: ' + data.error, 'error');
+  } catch (e) {
+    addLog('Failed to stop: ' + e.message, 'error');
+    btnStop.disabled = false;
   }
+}
 
-  function addLog(text, type) {
-    const div = document.createElement('div');
-    div.className = 'log-line' + (type ? ' ' + type : '');
-    div.textContent = text;
-    logScreen.appendChild(div);
-
-    // Keep max 500 lines
-    while (logScreen.children.length > 500) {
-      logScreen.removeChild(logScreen.firstChild);
+async function checkStatus() {
+  try {
+    const res = await fetch('/status');
+    const data = await res.json();
+    setRunning(data.running);
+    if (data.running && data.uptime) {
+      startTime = Date.now() - data.uptime * 1000;
+      if (!uptimeTimer) uptimeTimer = setInterval(updateUptime, 1000);
+      updateUptime();
     }
-
-    logScreen.scrollTop = logScreen.scrollHeight;
+  } catch (e) {
+    // server not ready
   }
+}
 
-  function connectSSE() {
-    if (eventSource) eventSource.close();
-    eventSource = new EventSource('/events');
-
-    eventSource.addEventListener('log', (e) => {
-      const data = JSON.parse(e.data);
-      addLog(data.text, data.type);
-    });
-
-    eventSource.addEventListener('status', (e) => {
-      const data = JSON.parse(e.data);
-      setRunning(data.running);
-      if (data.running && data.uptime) {
-        startTime = Date.now() - data.uptime * 1000;
-        if (!uptimeTimer) uptimeTimer = setInterval(updateUptime, 1000);
-        updateUptime();
-      }
-    });
-
-    eventSource.onerror = () => {
-      setTimeout(connectSSE, 3000);
-    };
-  }
-
-  async function startBot() {
-    btnStart.disabled = true;
-    addLog('> Starting bot...', 'info');
-    try {
-      const res = await fetch('/start', { method: 'POST' });
-      const data = await res.json();
-      if (!data.ok) addLog('Error: ' + data.error, 'error');
-    } catch (e) {
-      addLog('Failed to start: ' + e.message, 'error');
-      btnStart.disabled = false;
-    }
-  }
-
-  async function stopBot() {
-    btnStop.disabled = true;
-    addLog('> Stopping bot...', 'info');
-    try {
-      const res = await fetch('/stop', { method: 'POST' });
-      const data = await res.json();
-      if (!data.ok) addLog('Error: ' + data.error, 'error');
-    } catch (e) {
-      addLog('Failed to stop: ' + e.message, 'error');
-      btnStop.disabled = false;
-    }
-  }
-
-  // Initial status check
-  async function checkStatus() {
-    try {
-      const res = await fetch('/status');
-      const data = await res.json();
-      setRunning(data.running);
-      if (data.running && data.uptime) {
-        startTime = Date.now() - data.uptime * 1000;
-        if (!uptimeTimer) uptimeTimer = setInterval(updateUptime, 1000);
-        updateUptime();
-      }
-    } catch (e) {
-      // server not ready yet
-    }
-  }
-
-  checkStatus();
-  connectSSE();
+// ── Boot ──
+init();
+checkStatus();
+connectSSE();
 </script>
 
 </body>
