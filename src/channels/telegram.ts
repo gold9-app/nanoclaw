@@ -1,3 +1,5 @@
+import https from 'https';
+
 import { Bot } from 'grammy';
 
 import {
@@ -27,7 +29,13 @@ export class TelegramChannel implements Channel {
   }
 
   async connect(): Promise<void> {
-    this.bot = new Bot(this.botToken);
+    this.bot = new Bot(this.botToken, {
+      client: {
+        baseFetchConfig: {
+          agent: new https.Agent({ keepAlive: true, family: 4 }),
+        },
+      },
+    });
 
     this.bot.command('chatid', (ctx) => {
       const chatId = ctx.chat.id;
@@ -179,20 +187,50 @@ export class TelegramChannel implements Channel {
       return;
     }
 
-    try {
-      const numericId = jid.replace(/^tg:/, '');
+    const numericId = jid.replace(/^tg:/, '');
+    const MAX_LENGTH = 4096;
+    const chunks =
+      text.length <= MAX_LENGTH
+        ? [text]
+        : Array.from({ length: Math.ceil(text.length / MAX_LENGTH) }, (_, i) =>
+            text.slice(i * MAX_LENGTH, (i + 1) * MAX_LENGTH),
+          );
 
-      const MAX_LENGTH = 4096;
-      if (text.length <= MAX_LENGTH) {
-        await this.bot.api.sendMessage(numericId, text);
-      } else {
-        for (let i = 0; i < text.length; i += MAX_LENGTH) {
-          await this.bot.api.sendMessage(numericId, text.slice(i, i + MAX_LENGTH));
+    for (const chunk of chunks) {
+      await this.sendWithRetry(numericId, chunk);
+    }
+    logger.info({ jid, length: text.length }, 'Telegram message sent');
+  }
+
+  private async sendWithRetry(
+    chatId: string,
+    text: string,
+    maxRetries = 3,
+  ): Promise<void> {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        await this.bot!.api.sendMessage(chatId, text);
+        return;
+      } catch (err: any) {
+        const isRetryable =
+          err?.error?.code === 'ETIMEDOUT' ||
+          err?.error?.code === 'ECONNRESET' ||
+          err?.error?.code === 'ENOTFOUND' ||
+          err?.error?.errno === 'ETIMEDOUT';
+        if (!isRetryable || attempt === maxRetries) {
+          logger.error(
+            { chatId, attempt, err },
+            'Failed to send Telegram message',
+          );
+          return;
         }
+        const delay = 1000 * 2 ** attempt;
+        logger.warn(
+          { chatId, attempt: attempt + 1, code: err?.error?.code, delay },
+          'Telegram send failed, retrying...',
+        );
+        await new Promise((r) => setTimeout(r, delay));
       }
-      logger.info({ jid, length: text.length }, 'Telegram message sent');
-    } catch (err) {
-      logger.error({ jid, err }, 'Failed to send Telegram message');
     }
   }
 
