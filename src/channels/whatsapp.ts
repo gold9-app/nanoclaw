@@ -288,10 +288,17 @@ export class WhatsAppChannel implements Channel {
     if (this.flushing || this.outgoingQueue.length === 0) return;
     this.flushing = true;
     try {
-      logger.info({ count: this.outgoingQueue.length }, 'Flushing outgoing message queue');
-      while (this.outgoingQueue.length > 0) {
-        const item = this.outgoingQueue.shift()!;
-        await this.sendMessage(item.jid, item.text);
+      const toFlush = [...this.outgoingQueue];
+      this.outgoingQueue.length = 0;
+      logger.info({ count: toFlush.length }, 'Flushing outgoing message queue');
+      for (const item of toFlush) {
+        try {
+          await this.sock.sendMessage(item.jid, { text: item.text });
+          logger.info({ jid: item.jid, length: item.text.length }, 'Queued message sent');
+        } catch (err) {
+          this.outgoingQueue.push(item);
+          logger.warn({ jid: item.jid, err }, 'Failed to flush queued message, re-queued');
+        }
       }
     } finally {
       this.flushing = false;

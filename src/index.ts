@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { execFileSync, execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
@@ -51,7 +51,7 @@ let registeredGroups: Record<string, RegisteredGroup> = {};
 let lastAgentTimestamp: Record<string, string> = {};
 let messageLoopRunning = false;
 
-let whatsapp: WhatsAppChannel;
+let whatsapp: WhatsAppChannel | undefined;
 const channels: Channel[] = [];
 const queue = new GroupQueue();
 
@@ -426,7 +426,7 @@ function ensureDockerRunning(): void {
     const orphans = output.trim().split('\n').filter(Boolean);
     for (const name of orphans) {
       try {
-        execSync(`docker stop ${name}`, { stdio: 'pipe', timeout: 15000 });
+        execFileSync('docker', ['stop', name], { stdio: 'pipe', timeout: 15000 });
       } catch { /* already stopped */ }
     }
     if (orphans.length > 0) {
@@ -446,8 +446,12 @@ async function main(): Promise<void> {
   // Graceful shutdown handlers
   const shutdown = async (signal: string) => {
     logger.info({ signal }, 'Shutdown signal received');
-    await queue.shutdown(10000);
-    for (const ch of channels) await ch.disconnect();
+    try {
+      await queue.shutdown(10000);
+      for (const ch of channels) await ch.disconnect();
+    } catch (err) {
+      logger.error({ err }, 'Error during shutdown');
+    }
     process.exit(0);
   };
   process.on('SIGTERM', () => shutdown('SIGTERM'));

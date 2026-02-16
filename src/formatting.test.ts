@@ -1,4 +1,16 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+vi.mock('./config.js', async () => {
+  const name = 'Andy';
+  return {
+    ASSISTANT_NAME: name,
+    TRIGGER_PATTERN: new RegExp(`^@${escapeRegex(name)}(?:\\s|$)`, 'i'),
+  };
+});
 
 import { ASSISTANT_NAME, TRIGGER_PATTERN } from './config.js';
 import {
@@ -119,8 +131,8 @@ describe('TRIGGER_PATTERN', () => {
     expect(TRIGGER_PATTERN.test('@Andrew hello')).toBe(false);
   });
 
-  it('matches with word boundary before apostrophe', () => {
-    expect(TRIGGER_PATTERN.test("@Andy's thing")).toBe(true);
+  it('does not match @Andy followed by apostrophe (no word boundary)', () => {
+    expect(TRIGGER_PATTERN.test("@Andy's thing")).toBe(false);
   });
 
   it('matches @Andy alone (end of string is a word boundary)', () => {

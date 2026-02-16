@@ -360,6 +360,14 @@ export async function processTaskIpc(
         break;
       }
       if (data.jid && data.name && data.folder && data.trigger) {
+        // Validate folder name to prevent path traversal
+        if (!/^[a-zA-Z0-9_-]+$/.test(data.folder)) {
+          logger.warn(
+            { folder: data.folder },
+            'Invalid folder name in register_group (path traversal blocked)',
+          );
+          break;
+        }
         deps.registerGroup(data.jid, {
           name: data.name,
           folder: data.folder,
